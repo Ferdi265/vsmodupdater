@@ -50,7 +50,7 @@ def parse_args() -> Tuple[ArgumentParser, Namespace]:
     ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating Vintagestory mods")
 
     ap.add_argument("-a", "--all", action="store_true", help="update all mods")
-    ap.add_argument("-f", "--force", action="store_true", help="force an update even if up to date")
+    ap.add_argument("-f", "--force", action="store_true", help="force redownload even if up to date")
     ap.add_argument("-M", "--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.default_moddburl())
     ap.add_argument("-V", "--vs-dir", action="store", type=Path, help="VintageStory data directory", default=fs.default_vspath())
 
