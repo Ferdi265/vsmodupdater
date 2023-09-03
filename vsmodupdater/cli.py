@@ -37,9 +37,13 @@ def update_all(args: Namespace):
 
             new_mod = api.get_file(args.moddb_url, api_link)
             new_filename = f"{modid}_{api_version}.zip"
-            fs.delete_mod(args.vs_dir, mod)
-            fs.write_mod(args.vs_dir, new_filename, new_mod)
-            print("updated")
+
+            if args.dry_run:
+                print("skipping update")
+            else:
+                fs.delete_mod(args.vs_dir, mod)
+                fs.write_mod(args.vs_dir, new_filename, new_mod)
+                print("updated")
         except Exception as e:
             print()
             print(f" - failed to update {mod}: {type(e).__name__}: {e}")
@@ -50,6 +54,7 @@ def parse_args() -> Tuple[ArgumentParser, Namespace]:
 
     ap.add_argument("-a", "--all", action="store_true", help="update all mods")
     ap.add_argument("-f", "--force", action="store_true", help="force redownload even if up to date")
+    ap.add_argument("-d", "--dry-run", action="store_true", help="don't update even if out of date")
     ap.add_argument("-M", "--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.default_moddburl())
     ap.add_argument("-V", "--vs-dir", action="store", type=Path, help="VintageStory data directory", default=fs.default_vspath())
 
