@@ -8,5 +8,7 @@ A tool for updating VintageStory mods.
 
 ## Usage
 
-- run `vsmodupdater`
+- run `vsmodupdater` to update mods
+- run `vsmodupdater -i modid1 modid2` or `vsmodupdater -I mods.txt` to install mods
+- run `vsmodupdater -r modid1 modid2` or `vsmodupdater -R mods.txt` to remove mods
 - for help run `vsmodupdater --help`
