@@ -40,7 +40,7 @@ def update_all():
 def parse_args():
     ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating Vintagestory mods")
 
-    ap.add_argument("--moddb-url", action="store", type=str, help="base url for moddb API", default=api.BASEURL)
+    ap.add_argument("--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.BASEURL)
     ap.add_argument("--mod-dir", action="store", type=str, help="VintageStory mods directory", default=fs.MODPATH)
     ap.add_argument("-a", "--all", action="store_true", help="update all mods")
 
