@@ -7,7 +7,7 @@ from . import version
 from . import api
 from . import fs
 
-def update_all():
+def update_all(args):
     for mod in fs.find_mods():
         try:
             modinfo = util.CaseInsensitiveDict(fs.read_modinfo(mod))
@@ -24,10 +24,10 @@ def update_all():
             print(f"latest: {api_version:8} | ", end="", flush=True)
 
             cmp = version.compare(modversion, api_version)
-            if cmp > 0:
+            if cmp > 0 and not args.force:
                 print("version newer than latest? WTF?")
                 continue
-            elif cmp == 0:
+            elif cmp == 0 and not args.force:
                 print("up to date")
                 continue
             else:
@@ -48,6 +48,7 @@ def parse_args():
     ap.add_argument("--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.BASEURL)
     ap.add_argument("--mod-dir", action="store", type=str, help="VintageStory mods directory", default=fs.MODPATH)
     ap.add_argument("-a", "--all", action="store_true", help="update all mods")
+    ap.add_argument("-f", "--force", action="store_true", help="force an update even if up to date")
 
     return ap, ap.parse_args()
 
