@@ -6,7 +6,7 @@ with open("requirements.txt", "r") as f:
 setup(
     name = "vsmodupdater",
     description = "a mod updater for VintageStory",
-    version = "0.5.0",
+    version = "0.6.0",
     author = "Ferdinand Bachmann",
     author_email = "theferdi265@gmail.com",
     packages = [
