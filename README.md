@@ -8,5 +8,5 @@ A tool for updating VintageStory mods.
 
 ## Usage
 
-- run `vsmodupdater --all`
+- run `vsmodupdater`
 - for help run `vsmodupdater --help`

@@ -52,7 +52,6 @@ def update_all(args: Namespace):
 def parse_args() -> Tuple[ArgumentParser, Namespace]:
     ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating VintageStory mods")
 
-    ap.add_argument("-a", "--all", action="store_true", help="update all mods")
     ap.add_argument("-f", "--force", action="store_true", help="force redownload even if up to date")
     ap.add_argument("-d", "--dry-run", action="store_true", help="don't update even if out of date")
     ap.add_argument("-M", "--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.default_moddburl())
@@ -68,9 +67,6 @@ def main():
         return
 
     try:
-        if args.all:
-            update_all(args)
-        else:
-            ap.print_help()
+        update_all(args)
     except KeyboardInterrupt:
         print()
