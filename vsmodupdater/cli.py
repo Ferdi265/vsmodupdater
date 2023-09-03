@@ -1,3 +1,4 @@
+import traceback
 import argparse
 import sys
 
@@ -36,6 +37,7 @@ def update_all():
             fs.write_mod(api_filename, new_mod)
         except Exception as e:
             print(f" - failed to update {mod}: {type(e).__name__}: {e}")
+            print(traceback.format_exc())
 
 def parse_args():
     ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating Vintagestory mods")
