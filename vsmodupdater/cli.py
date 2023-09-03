@@ -14,14 +14,14 @@ def update_all():
             modid = modinfo["modid"]
             modname = modinfo["name"]
             modversion = modinfo["version"]
-            print(f">> {modname} | current: {modversion} | ", end="", flush=True)
+            print(f">> {modname:30} | current: {modversion:8} | ", end="", flush=True)
 
             api_modinfo = api.get_modinfo(modid)
             api_release = api_modinfo["mod"]["releases"][0]
             api_version = api_release["modversion"]
             api_link = api_release["mainfile"]
             api_filename = api_release["filename"]
-            print(f"latest: {api_version} | ", end="", flush=True)
+            print(f"latest: {api_version:8} | ", end="", flush=True)
 
             cmp = version.compare(modversion, api_version)
             if cmp > 0:
