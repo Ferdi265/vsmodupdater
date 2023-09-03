@@ -6,18 +6,44 @@ import os
 
 from . import util
 
-def default_vspath() -> Optional[Path]:
-    home = os.getenv("HOME")
-    if home is not None:
-        return Path(home) / ".config" / "VintagestoryData"
+def default_vspath(prefer_flatpak: bool = False) -> Optional[Path]:
+    def try_path(envvar: str, fpath: Path) -> Optional[Path]:
+        var = os.getenv(envvar)
+        if var is None:
+            return None
 
-    appdata = os.getenv("AppData")
-    if appdata is not None:
-        return Path(appdata) / "VintagestoryData"
+        path = Path(var) / fpath
+        if not path.exists():
+            return None
+
+        return path
+
+    paths = [
+        ("XDG_CONFIG_HOME", Path("VintagestoryData")),
+        ("HOME", Path(".config") / "VintagestoryData"),
+        ("AppData", Path("VintagestoryData")),
+    ]
+
+    flatpak_path = ("HOME", Path(".var") / "app" / "at.vintagestory.VintageStory" / "config" / "VintagestoryData")
+    paths.insert(0 if prefer_flatpak else len(paths), flatpak_path)
+
+    for envvar, fpath in paths:
+        var = os.getenv(envvar)
+        if var is None:
+            continue
+
+        path = Path(var) / fpath
+        if not path.exists():
+            continue
+
+        return path
 
     return None
 
 def find_mods(vspath: Path) -> List[str]:
+    if not (vspath / "Mods").exists():
+        return []
+
     return [mod for mod in os.listdir(vspath / "Mods") if mod.endswith(".zip")]
 
 def read_modinfo(vspath: Path, name: str) -> dict:
