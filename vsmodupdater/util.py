@@ -1,3 +1,7 @@
+from typing import IO, Any
+from pathlib import Path
+import sys
+
 class CaseInsensitiveDict(dict):
     def __init__(self, *args, **kwargs):
         orig = dict(*args, **kwargs)
@@ -9,3 +13,12 @@ class CaseInsensitiveDict(dict):
 
     def __getitem__(self, key):
         return super().__getitem__(key.lower())
+
+def open_or_stdio(name: str | Path, mode: str) -> IO[Any]:
+    if str(name) == "-":
+        if mode == "r":
+            return sys.stdin
+        elif mode == "w":
+            return sys.stdout
+
+    return open(name, mode)
