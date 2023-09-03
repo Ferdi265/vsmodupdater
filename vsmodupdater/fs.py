@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Dict, Optional
 from pathlib import Path
 import zipfile
 import json
@@ -34,6 +34,18 @@ def find_mods(vspath: Path) -> List[str]:
         return []
 
     return [mod for mod in os.listdir(vspath / "Mods") if mod.endswith(".zip")]
+
+def find_mods_by_id(vspath: Path) -> Dict[str, str]:
+    mods_by_id = {}
+    for mod in find_mods(vspath):
+        try:
+            modinfo = read_modinfo(vspath, mod)
+            modid = modinfo["modid"]
+            mods_by_id[modid] = mod
+        except Exception:
+            pass
+
+    return mods_by_id
 
 def read_modinfo(vspath: Path, name: str) -> dict:
     with zipfile.ZipFile(vspath / "Mods" / name, 'r') as z:
