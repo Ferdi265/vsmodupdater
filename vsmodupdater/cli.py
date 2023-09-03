@@ -54,16 +54,22 @@ def parse_args() -> Tuple[ArgumentParser, Namespace]:
 
     ap.add_argument("-f", "--force", action="store_true", help="force redownload even if up to date")
     ap.add_argument("-d", "--dry-run", action="store_true", help="don't update even if out of date")
-    ap.add_argument("-M", "--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.default_moddburl())
-    ap.add_argument("-V", "--vs-dir", action="store", type=Path, help="VintageStory data directory", default=fs.default_vspath())
+    ap.add_argument("-M", "--moddb-url", action="store", type=str, help="VintageStory ModDB API URL")
+    ap.add_argument("-V", "--vs-dir", action="store", type=Path, help="VintageStory data directory")
+    ap.add_argument("-F", "--prefer-flatpak", action="store_true", help="prefer the config directory for the VintageStory Flatpak over native")
 
     return ap, ap.parse_args()
 
 def main():
     ap, args = parse_args()
 
+    if args.moddb_url is None:
+        args.moddb_url = api.default_moddburl()
+
     if args.vs_dir is None:
-        print("error: VintageStory data directory unknown, please specify with --vs-dir")
+        args.vs_dir = fs.default_vspath(prefer_flatpak = args.prefer_flatpak)
+    if args.vs_dir is None:
+        print("error: VintageStory data directory not found, please specify with --vs-dir")
         return
 
     try:
