@@ -14,28 +14,31 @@ def update_all():
             modid = modinfo["modid"]
             modname = modinfo["name"]
             modversion = modinfo["version"]
-            print(f">> checking {modname} ({modversion}) for updates")
+            print(f">> {modname} | current: {modversion} | ", end="", flush=True)
 
             api_modinfo = api.get_modinfo(modid)
             api_release = api_modinfo["mod"]["releases"][0]
             api_version = api_release["modversion"]
             api_link = api_release["mainfile"]
             api_filename = api_release["filename"]
+            print(f"latest: {api_version} | ", end="", flush=True)
 
             cmp = version.compare(modversion, api_version)
             if cmp > 0:
-                print("- version newer than latest (wtf?)")
+                print("version newer than latest? WTF?")
                 continue
             elif cmp == 0:
-                print("- up to date")
+                print("up to date")
                 continue
             else:
-                print(f"- downloading version {api_version}")
+                print(f"downloading | ", end="", flush=True)
 
             new_mod = api.get_mod(api_link)
             fs.delete_mod(mod)
             fs.write_mod(api_filename, new_mod)
+            print("updated")
         except Exception as e:
+            print()
             print(f" - failed to update {mod}: {type(e).__name__}: {e}")
             print(traceback.format_exc())
 
