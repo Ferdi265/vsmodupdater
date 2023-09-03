@@ -7,17 +7,6 @@ import os
 from . import util
 
 def default_vspath(prefer_flatpak: bool = False) -> Optional[Path]:
-    def try_path(envvar: str, fpath: Path) -> Optional[Path]:
-        var = os.getenv(envvar)
-        if var is None:
-            return None
-
-        path = Path(var) / fpath
-        if not path.exists():
-            return None
-
-        return path
-
     paths = [
         ("XDG_CONFIG_HOME", Path("VintagestoryData")),
         ("HOME", Path(".config") / "VintagestoryData"),
