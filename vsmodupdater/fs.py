@@ -4,6 +4,8 @@ import zipfile
 import json
 import os
 
+from . import util
+
 def default_vspath() -> Optional[Path]:
     home = os.getenv("HOME")
     if home is not None:
@@ -21,7 +23,7 @@ def find_mods(vspath: Path) -> List[str]:
 def read_modinfo(vspath: Path, name: str) -> dict:
     with zipfile.ZipFile(vspath / "Mods" / name, 'r') as z:
         modinfo_str = z.read("modinfo.json")
-        return json.loads(modinfo_str)
+        return util.CaseInsensitiveDict(json.loads(modinfo_str))
 
 def delete_mod(vspath: Path, name: str):
     os.unlink(vspath / "Mods" / name)
