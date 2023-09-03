@@ -78,6 +78,12 @@ def remove_mods_file(args: Namespace):
 
     remove_mods(args)
 
+def dump_mods(args: Namespace):
+    existing_mods = fs.find_mods_by_id(args.vs_dir)
+    with util.open_or_stdio(args.dump_file, "w") as f:
+        for modid in existing_mods.keys():
+            f.write(f"{modid}\n")
+
 def update_all(args: Namespace):
     for mod in fs.find_mods(args.vs_dir):
         try:
@@ -121,9 +127,10 @@ def parse_args() -> Tuple[ArgumentParser, Namespace]:
     ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating VintageStory mods")
 
     ap.add_argument("-i", "--install", nargs="+", action="store", type=str, help="install mods with the given ids")
-    ap.add_argument("-I", "--install-file", action="store", type=str, help="install mods from the given file")
+    ap.add_argument("-I", "--install-file", action="store", type=Path, help="install mods from the given file")
     ap.add_argument("-r", "--remove", nargs="+", action="store", type=str, help="remove mods with the given ids")
-    ap.add_argument("-R", "--remove-file", action="store", type=str, help="remove mods from the given file")
+    ap.add_argument("-R", "--remove-file", action="store", type=Path, help="remove mods from the given file")
+    ap.add_argument("-D", "--dump-file", action="store", type=Path, help="dump installed mod ids to the given file")
     ap.add_argument("-f", "--force", action="store_true", help="force redownload even if up to date")
     ap.add_argument("-d", "--dry-run", action="store_true", help="don't update even if out of date")
     ap.add_argument("-M", "--moddb-url", action="store", type=str, help="VintageStory ModDB API URL")
@@ -153,6 +160,8 @@ def main():
             remove_mods(args)
         elif args.remove_file is not None:
             remove_mods_file(args)
+        elif args.dump_file is not None:
+            dump_mods(args)
         else:
             update_all(args)
     except KeyboardInterrupt:
