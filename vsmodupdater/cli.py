@@ -45,7 +45,7 @@ def install_mods(args: Namespace):
             print(traceback.format_exc())
 
 def install_mods_file(args: Namespace):
-    with open(args.install_file, "r") as f:
+    with util.open_or_stdio(args.install_file, "r") as f:
         args.install = [mod for mod in f.read().split("\n") if len(mod) != 0]
 
     install_mods(args)
@@ -73,7 +73,7 @@ def remove_mods(args: Namespace):
             print(traceback.format_exc())
 
 def remove_mods_file(args: Namespace):
-    with open(args.remove_file, "r") as f:
+    with util.open_or_stdio(args.remove_file, "r") as f:
         args.remove = [mod for mod in f.read().split("\n") if len(mod) != 0]
 
     remove_mods(args)
