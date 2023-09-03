@@ -1,21 +1,31 @@
-from typing import List
+from typing import List, Optional
+from pathlib import Path
 import zipfile
 import json
 import os
 
-MODPATH = os.environ["HOME"] + "/.config/VintagestoryData/Mods"
+def default_vspath() -> Optional[Path]:
+    home = os.getenv("HOME")
+    if home is not None:
+        return Path(home) / ".config" / "VintagestoryData"
 
-def find_mods() -> List[str]:
-    return [mod for mod in os.listdir(MODPATH) if mod.endswith(".zip")]
+    appdata = os.getenv("AppData")
+    if appdata is not None:
+        return Path(appdata) / "VintagestoryData"
 
-def read_modinfo(name: str) -> dict:
-    with zipfile.ZipFile(MODPATH + "/" + name, 'r') as z:
+    return None
+
+def find_mods(vspath: Path) -> List[str]:
+    return [mod for mod in os.listdir(vspath / "Mods") if mod.endswith(".zip")]
+
+def read_modinfo(vspath: Path, name: str) -> dict:
+    with zipfile.ZipFile(vspath / "Mods" / name, 'r') as z:
         modinfo_str = z.read("modinfo.json")
         return json.loads(modinfo_str)
 
-def delete_mod(name: str):
-    os.unlink(MODPATH + "/" + name)
+def delete_mod(vspath: Path, name: str):
+    os.unlink(vspath / "Mods" / name)
 
-def write_mod(name: str, mod: bytes):
-    with open(MODPATH + "/" + name, "wb") as f:
+def write_mod(vspath: Path, name: str, mod: bytes):
+    with open(vspath / "Mods" / name, "wb") as f:
         f.write(mod)
