@@ -1,4 +1,4 @@
-import zipfile
+import argparse
 import sys
 
 from . import util
@@ -37,7 +37,22 @@ def update_all():
         except Exception as e:
             print(f" - failed to update {mod}: {type(e).__name__}: {e}")
 
-def main():
-    args = sys.argv[1:]
+def parse_args():
+    ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating Vintagestory mods")
 
-    update_all()
+    ap.add_argument("--moddb-url", action="store", type=str, help="base url for moddb API", default=api.BASEURL)
+    ap.add_argument("--mod-dir", action="store", type=str, help="VintageStory mods directory", default=fs.MODPATH)
+    ap.add_argument("-a", "--all", action="store_true", help="update all mods")
+
+    return ap, ap.parse_args()
+
+def main():
+    ap, args = parse_args()
+
+    api.BASEURL = args.moddb_url
+    fs.MODPATH = args.mod_dir
+
+    if args.all:
+        update_all()
+    else:
+        ap.print_help()
