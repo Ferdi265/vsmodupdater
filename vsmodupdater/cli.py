@@ -58,6 +58,9 @@ def main():
     fs.MODPATH = args.mod_dir
 
     if args.all:
-        update_all()
+        try:
+            update_all(args)
+        except KeyboardInterrupt:
+            print()
     else:
         ap.print_help()
