@@ -13,7 +13,7 @@ from . import fs
 def update_all(args: Namespace):
     for mod in fs.find_mods(args.vs_dir):
         try:
-            modinfo = util.CaseInsensitiveDict(fs.read_modinfo(args.vs_dir, mod))
+            modinfo = fs.read_modinfo(args.vs_dir, mod)
             modid = modinfo["modid"]
             modname = modinfo["name"]
             modversion = modinfo["version"]
@@ -23,7 +23,6 @@ def update_all(args: Namespace):
             api_release = api_modinfo["mod"]["releases"][0]
             api_version = api_release["modversion"]
             api_link = api_release["mainfile"]
-            api_filename = api_release["filename"]
             print(f"latest: {api_version:8} | ", end="", flush=True)
 
             cmp = version.compare(modversion, api_version)
