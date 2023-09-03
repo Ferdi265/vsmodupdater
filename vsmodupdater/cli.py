@@ -10,20 +10,8 @@ from . import version
 from . import api
 from . import fs
 
-def mods_by_id(args: Namespace) -> Dict[str, str]:
-    mods_by_id = {}
-    for mod in fs.find_mods(args.vs_dir):
-        try:
-            modinfo = fs.read_modinfo(args.vs_dir, mod)
-            modid = modinfo["modid"]
-            mods_by_id[modid] = mod
-        except Exception:
-            pass
-
-    return mods_by_id
-
 def install_mods(args: Namespace):
-    existing_mods = mods_by_id(args)
+    existing_mods = fs.find_mods_by_id(args.vs_dir)
     for modid in args.install:
         try:
             api_modinfo = api.get_modinfo(args.moddb_url, modid)
@@ -63,7 +51,7 @@ def install_mods_file(args: Namespace):
     install_mods(args)
 
 def remove_mods(args: Namespace):
-    existing_mods = mods_by_id(args)
+    existing_mods = fs.find_mods_by_id(args.vs_dir)
     for modid in args.remove:
         try:
             if modid not in existing_mods:
