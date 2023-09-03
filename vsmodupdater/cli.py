@@ -1,3 +1,6 @@
+from typing import Tuple
+from pathlib import Path
+from argparse import ArgumentParser, Namespace
 import traceback
 import argparse
 import sys
@@ -7,16 +10,16 @@ from . import version
 from . import api
 from . import fs
 
-def update_all(args):
-    for mod in fs.find_mods():
+def update_all(args: Namespace):
+    for mod in fs.find_mods(args.vs_dir):
         try:
-            modinfo = util.CaseInsensitiveDict(fs.read_modinfo(mod))
+            modinfo = util.CaseInsensitiveDict(fs.read_modinfo(args.vs_dir, mod))
             modid = modinfo["modid"]
             modname = modinfo["name"]
             modversion = modinfo["version"]
             print(f">> {modname:30} | current: {modversion:8} | ", end="", flush=True)
 
-            api_modinfo = api.get_modinfo(modid)
+            api_modinfo = api.get_modinfo(args.moddb_url, modid)
             api_release = api_modinfo["mod"]["releases"][0]
             api_version = api_release["modversion"]
             api_link = api_release["mainfile"]
@@ -33,36 +36,37 @@ def update_all(args):
             else:
                 print(f"downloading | ", end="", flush=True)
 
-            new_mod = api.get_mod(api_link)
+            new_mod = api.get_file(args.moddb_url, api_link)
             new_filename = f"{modid}_{api_version}.zip"
-            fs.delete_mod(mod)
-            fs.write_mod(new_filename, new_mod)
+            fs.delete_mod(args.vs_dir, mod)
+            fs.write_mod(args.vs_dir, new_filename, new_mod)
             print("updated")
         except Exception as e:
             print()
             print(f" - failed to update {mod}: {type(e).__name__}: {e}")
             print(traceback.format_exc())
 
-def parse_args():
+def parse_args() -> Tuple[ArgumentParser, Namespace]:
     ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating Vintagestory mods")
 
-    ap.add_argument("--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.BASEURL)
-    ap.add_argument("--mod-dir", action="store", type=str, help="VintageStory mods directory", default=fs.MODPATH)
     ap.add_argument("-a", "--all", action="store_true", help="update all mods")
     ap.add_argument("-f", "--force", action="store_true", help="force an update even if up to date")
+    ap.add_argument("-M", "--moddb-url", action="store", type=str, help="VintageStory ModDB API URL", default=api.default_moddburl())
+    ap.add_argument("-V", "--vs-dir", action="store", type=Path, help="VintageStory data directory", default=fs.default_vspath())
 
     return ap, ap.parse_args()
 
 def main():
     ap, args = parse_args()
 
-    api.BASEURL = args.moddb_url
-    fs.MODPATH = args.mod_dir
+    if args.vs_dir is None:
+        print("error: VintageStory data directory unknown, please specify with --vs-dir")
+        return
 
-    if args.all:
-        try:
+    try:
+        if args.all:
             update_all(args)
-        except KeyboardInterrupt:
-            print()
-    else:
-        ap.print_help()
+        else:
+            ap.print_help()
+    except KeyboardInterrupt:
+        print()
