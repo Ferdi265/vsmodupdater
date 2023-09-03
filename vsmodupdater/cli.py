@@ -34,8 +34,9 @@ def update_all(args):
                 print(f"downloading | ", end="", flush=True)
 
             new_mod = api.get_mod(api_link)
+            new_filename = f"{modid}_{api_version}.zip"
             fs.delete_mod(mod)
-            fs.write_mod(api_filename, new_mod)
+            fs.write_mod(new_filename, new_mod)
             print("updated")
         except Exception as e:
             print()
