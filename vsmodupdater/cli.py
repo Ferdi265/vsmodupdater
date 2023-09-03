@@ -27,8 +27,18 @@ def install_mods(args: Namespace):
             else:
                 modversion = "none"
 
-            print(f"current: {modversion:8} | latest: {api_version:8} | downloading | ", end="", flush=True)
+            print(f"current: {modversion:8} | latest: {api_version:8} | ", end="", flush=True)
 
+            if modversion != "none":
+                cmp = version.compare(modversion, api_version)
+                if cmp > 0 and not args.force:
+                    print("version newer than latest? WTF?")
+                    continue
+                elif cmp == 0 and not args.force:
+                    print("up to date")
+                    continue
+
+            print(f"downloading | ", end="", flush=True)
             new_mod = api.get_file(args.moddb_url, api_link)
             new_filename = f"{modid}_{api_version}.zip"
 
@@ -106,9 +116,8 @@ def update_all(args: Namespace):
             elif cmp == 0 and not args.force:
                 print("up to date")
                 continue
-            else:
-                print(f"downloading | ", end="", flush=True)
 
+            print(f"downloading | ", end="", flush=True)
             new_mod = api.get_file(args.moddb_url, api_link)
             new_filename = f"{modid}_{api_version}.zip"
 
