@@ -47,7 +47,7 @@ def update_all(args: Namespace):
             print(traceback.format_exc())
 
 def parse_args() -> Tuple[ArgumentParser, Namespace]:
-    ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating Vintagestory mods")
+    ap = argparse.ArgumentParser("vsmodupdater", description="A tool for updating VintageStory mods")
 
     ap.add_argument("-a", "--all", action="store_true", help="update all mods")
     ap.add_argument("-f", "--force", action="store_true", help="force redownload even if up to date")
